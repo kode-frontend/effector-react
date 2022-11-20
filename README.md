@@ -1,65 +1,38 @@
-# Plan
+# План лайвкодинга
 
-1. добавление задачи
-2. редактирование задачи
-3. cписок пользователей со своими листами
-4. cохранение данных в localStorage
+1. Переписать на использование сторов
+2. Добавление таски
+3. Редактирование таски
+4. Удаление таски + закрытие модалки
+5. Персистинг тасок
+6. Получение тасок с бека
 
-# TODO:
+Опционально:
+1. Прикрепить пользака к таске
+2. Выбора пользака
+3. Логаут
 
-1. Добавить моковую синхронизацию таcок с бэком
+## Основные понятия
 
-# Init project
+**Effector** - декларативный способ управлять состоянием приложения. Нужен, чтобы не пропихивать данные через пропсы или контексты. Чаще всего используется для хранения токенов, работы с фильтрами, передачи информации между компонентами.
 
-`$ mkdir ~/projects/lecture_effector_live`
+В эффекторе есть 3 ключевых понятия:
+- **Store** - само хранилище данных. По конвенции названия сторок начинаются с $
+- **Event** - триггер изменения стора. Сторы подписываются на изменения эвентов и обновляют свое состояние в зависимости от payload (аргумента в эвенте). Желательно, чтобы название начиналось с глагола.
+- **Effect** - обработчик сайд эффектов. Применяется довольно редко, т.к. в приоритете будем пользоваться react-query
 
-`$ yarn create react-app . --template typescript`
+Подписка стора на эвент
+```ts
+store.on(event, (state,payload) => payload)
+```
 
-`$ yarn add effector effector-react`
-
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Всемогучий sample:
+```ts
+sample({
+  clock: //триггер события, может быть стором/эвентом/эффектом
+  source: //дополнительные сторы, откуда берутся данные. Может быть просто стором, массивом или объектом
+  filter: //функция, возвращающая boolean. При false, эвент не триггерится
+  fn: //функция - маппер данных. аргументами принимают (source, clock)
+  target: //если указать как стор, будет принимать в себя результат fn. Иначе sample будет возвращать эвент, который можно присвоить переменной
+})
+```
