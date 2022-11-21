@@ -97,3 +97,15 @@ sample({
   },
   target: $draft,
 });
+
+export const closeModal = createEvent();
+
+$draft.reset(closeModal);
+
+export const removeTask = createEvent<string>();
+
+$tasks.on(removeTask, (state, payload) =>
+  state.filter((task) => task.id !== payload)
+);
+
+$draft.reset(removeTask);
