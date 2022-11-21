@@ -1,4 +1,5 @@
 import { createEvent, createStore, sample } from "effector";
+import { $selectedUser } from "../../users/model";
 import { TTask } from "../types";
 
 const $counter = createStore(3);
@@ -62,19 +63,19 @@ $counter.on(saveDraft, (state, payload) =>
 
 sample({
   clock: saveDraft,
-  source: { tasks: $tasks, counter: $counter },
-  fn: ({ tasks, counter }, clock) => {
+  source: { tasks: $tasks, counter: $counter, userId: $selectedUser },
+  fn: ({ tasks, counter, userId }, clock) => {
     if (clock.id) {
       const editIndex = tasks.findIndex((task) => task.id === clock.id);
 
       if (editIndex !== -1) {
         const updatedTasks: TTask[] = [...tasks];
-        updatedTasks[editIndex] = clock;
+        updatedTasks[editIndex] = { ...clock, userId };
         return updatedTasks;
       }
     }
 
-    return [...tasks, { ...clock, id: `KODE-${counter}` }];
+    return [...tasks, { ...clock, id: `KODE-${counter}`, userId }];
   },
   target: $tasks,
 });

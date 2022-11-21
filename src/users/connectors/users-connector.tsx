@@ -1,25 +1,20 @@
+import { useStore } from "effector-react";
 import React from "react";
+import { $selectedUser, $users, logout, selectUser } from "../model";
 
-import { TUser } from "../types";
 import { Users } from "../ui/organisms/users";
 
 export const UsersConnector = () => {
-  const users: TUser[] = [
-    { id: "vsm", name: "Владислав Смирнов" },
-    { id: "vs", name: "Валерий Шабарин" },
-  ];
+  const users = useStore($users);
 
-  const selectedUserId = "vs";
-
-  const handleUserClick = () => null;
-  const logout = () => null;
+  const selectedUserId = useStore($selectedUser);
 
   return (
     <Users
       users={users}
-      onUserClick={handleUserClick}
+      onUserClick={selectUser}
       onLogout={logout}
-      selectedUserId={selectedUserId}
+      selectedUserId={selectedUserId || ""}
     />
   );
 };
