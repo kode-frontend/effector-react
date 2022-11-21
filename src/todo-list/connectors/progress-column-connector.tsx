@@ -1,8 +1,11 @@
-import { TTask } from "../types";
+import { useStoreMap } from "effector-react";
+import { $tasks } from "../model";
 import { Column } from "../ui/organisms";
 
 export const ProgressColumnConnector = () => {
-  const tasks: TTask[] = []; //filter items by progress
+  const tasks = useStoreMap($tasks, (state) =>
+    state.filter((task) => task.status === "progress")
+  );
 
   const handleTaskClick = () => null;
 

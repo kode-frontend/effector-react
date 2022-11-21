@@ -1,16 +1,11 @@
-import { TTask } from "../types";
+import { useStoreMap } from "effector-react";
+import { $tasks } from "../model";
 import { Column } from "../ui/organisms";
 
 export const DoneColumnConnector = () => {
-  const tasks: TTask[] = [
-    {
-      id: "KODE-1",
-      title: "Провести собес",
-      description: "Спросить знания о JS, React",
-      userId: "vs",
-      status: "done",
-    },
-  ]; //filter items by done
+  const tasks = useStoreMap($tasks, (state) =>
+    state.filter((task) => task.status === "done")
+  );
 
   const handleTaskClick = () => null;
 
