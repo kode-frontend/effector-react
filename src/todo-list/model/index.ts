@@ -56,15 +56,44 @@ $draft.on(createTask, (_, payload) => ({
 
 export const saveDraft = createEvent<TTask>();
 
-$counter.on(saveDraft, (state) => state + 1);
+$counter.on(saveDraft, (state, payload) =>
+  payload.id !== "" ? state : state + 1
+);
 
 sample({
   clock: saveDraft,
   source: { tasks: $tasks, counter: $counter },
   fn: ({ tasks, counter }, clock) => {
+    if (clock.id) {
+      const editIndex = tasks.findIndex((task) => task.id === clock.id);
+
+      if (editIndex !== -1) {
+        const updatedTasks: TTask[] = [...tasks];
+        updatedTasks[editIndex] = clock;
+        return updatedTasks;
+      }
+    }
+
     return [...tasks, { ...clock, id: `KODE-${counter}` }];
   },
   target: $tasks,
 });
 
 $draft.reset(saveDraft);
+
+export const editTask = createEvent<string>();
+
+sample({
+  clock: editTask,
+  source: $tasks,
+  fn: (source, clock) => {
+    const task = source.find((sourceTask) => sourceTask.id === clock);
+
+    if (!task) {
+      return initialDraft;
+    }
+    const draftEdit: TDraft = { type: "edit", task };
+    return draftEdit;
+  },
+  target: $draft,
+});

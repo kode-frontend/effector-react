@@ -1,5 +1,5 @@
 import { useStoreMap } from "effector-react";
-import { $tasks } from "../model";
+import { $tasks, editTask } from "../model";
 import { Column } from "../ui/organisms";
 
 export const DoneColumnConnector = () => {
@@ -7,7 +7,5 @@ export const DoneColumnConnector = () => {
     state.filter((task) => task.status === "done")
   );
 
-  const handleTaskClick = () => null;
-
-  return <Column onClick={handleTaskClick} tasks={tasks} />;
+  return <Column onClick={editTask} tasks={tasks} />;
 };

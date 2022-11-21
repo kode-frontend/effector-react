@@ -12,8 +12,6 @@ export const TodoListConnector = () => {
   const closeDraft = () => null;
   const removeTask = () => null;
 
-  const type: string | null = null;
-
   return (
     <>
       <List
@@ -26,8 +24,9 @@ export const TodoListConnector = () => {
       {draft.type === "create" && (
         <TaskDetail data={draft.task} onClose={closeDraft} onSave={saveDraft} />
       )}
-      {type === "edit" && (
+      {draft.type === "edit" && (
         <TaskDetail
+          data={draft.task}
           onClose={closeDraft}
           onRemove={removeTask}
           onSave={saveDraft}
