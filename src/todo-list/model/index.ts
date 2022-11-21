@@ -1,5 +1,6 @@
-import { createEvent, createStore, sample } from "effector";
+import { createEffect, createEvent, createStore, sample } from "effector";
 import { persist } from "effector-storage/local";
+import { getTasks } from "../../api/get-tasks";
 import { $selectedUser } from "../../users/model";
 import { TTask } from "../types";
 
@@ -116,3 +117,9 @@ $tasks.on(removeTask, (state, payload) =>
 );
 
 $draft.reset(removeTask);
+
+export const fetchDataFx = createEffect(async () => {
+  return await getTasks();
+});
+
+$tasks.on(fetchDataFx.doneData, (_, payload) => payload);
