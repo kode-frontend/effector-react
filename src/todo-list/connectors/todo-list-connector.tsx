@@ -1,3 +1,5 @@
+import { useStore } from "effector-react";
+import { $draft, createTask, saveDraft } from "../model";
 import { TaskDetail } from "../ui/organisms";
 import { List } from "../ui/organisms/list";
 import { DoneColumnConnector } from "./done-column-conenctor";
@@ -5,10 +7,9 @@ import { ProgressColumnConnector } from "./progress-column-connector";
 import { TodoColumnConnector } from "./todo-column-connector";
 
 export const TodoListConnector = () => {
+  const draft = useStore($draft);
   const tasksLoading = false;
-  const onAddTask = () => null;
   const closeDraft = () => null;
-  const saveDraft = () => null;
   const removeTask = () => null;
 
   const type: string | null = null;
@@ -17,13 +18,13 @@ export const TodoListConnector = () => {
     <>
       <List
         isLoading={tasksLoading}
-        onAddTask={onAddTask}
+        onAddTask={createTask}
         todo={<TodoColumnConnector />}
         progress={<ProgressColumnConnector />}
         done={<DoneColumnConnector />}
       />
-      {type === "create" && (
-        <TaskDetail onClose={closeDraft} onSave={saveDraft} />
+      {draft.type === "create" && (
+        <TaskDetail data={draft.task} onClose={closeDraft} onSave={saveDraft} />
       )}
       {type === "edit" && (
         <TaskDetail

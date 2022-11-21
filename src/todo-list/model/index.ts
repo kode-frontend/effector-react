@@ -1,5 +1,7 @@
-import { createStore } from "effector";
+import { createEvent, createStore, sample } from "effector";
 import { TTask } from "../types";
+
+const $counter = createStore(3);
 
 export const $tasks = createStore<TTask[]>([
   {
@@ -24,3 +26,45 @@ export const $tasks = createStore<TTask[]>([
     userId: null,
   },
 ]);
+
+export const createTask = createEvent<string>();
+
+type TDraft = {
+  type: "create" | "edit" | null;
+  task: TTask;
+};
+
+const emptyTask: TTask = {
+  id: "",
+  status: "todo",
+  title: "",
+  userId: null,
+  description: "",
+};
+
+const initialDraft: TDraft = {
+  type: null,
+  task: emptyTask,
+};
+
+export const $draft = createStore(initialDraft);
+
+$draft.on(createTask, (_, payload) => ({
+  type: "create",
+  task: { ...emptyTask, title: payload },
+}));
+
+export const saveDraft = createEvent<TTask>();
+
+$counter.on(saveDraft, (state) => state + 1);
+
+sample({
+  clock: saveDraft,
+  source: { tasks: $tasks, counter: $counter },
+  fn: ({ tasks, counter }, clock) => {
+    return [...tasks, { ...clock, id: `KODE-${counter}` }];
+  },
+  target: $tasks,
+});
+
+$draft.reset(saveDraft);
