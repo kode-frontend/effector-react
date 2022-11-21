@@ -1,4 +1,5 @@
 import { createEvent, createStore, sample } from "effector";
+import { persist } from "effector-storage/local";
 import { $selectedUser } from "../../users/model";
 import { TTask } from "../types";
 
@@ -27,6 +28,11 @@ export const $tasks = createStore<TTask[]>([
     userId: null,
   },
 ]);
+
+persist({
+  store: $tasks,
+  key: "KODE-TASKS",
+});
 
 export const createTask = createEvent<string>();
 

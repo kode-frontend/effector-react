@@ -1,4 +1,5 @@
 import { createEvent, createStore } from "effector";
+import { persist } from "effector-storage/local";
 import { TUser } from "../types";
 
 export const $users = createStore<TUser[]>([
@@ -6,7 +7,12 @@ export const $users = createStore<TUser[]>([
   { id: "vs", name: "Валерий Шабарин" },
 ]);
 
-export const $selectedUser = createStore<string | null>("");
+export const $selectedUser = createStore<string | null>(null);
+
+persist({
+  store: $selectedUser,
+  key: "SELECTED_USER",
+});
 
 export const selectUser = createEvent<string>();
 
